@@ -17,17 +17,17 @@
 #include "freertos/task.h"
 #include "lvgl.h"
 #include "lvgl_example.h"
-
+#include "ui/ui.h"
 
 static const char *TAG = "ST7789_LVGL_MAIN";
 
 #define LCD_HOST SPI2_HOST
 
-// Orientación vertical de la pantalla
-#define LCD_H_RES 172
-#define LCD_V_RES 320
+// Orientación horizontal de la pantalla (Rotada 90°)
+#define LCD_H_RES 320
+#define LCD_V_RES 172
 
-#define LCD_PIXEL_CLOCK_HZ (20 * 1000 * 1000) // Subido a 20MHz para fluidez
+#define LCD_PIXEL_CLOCK_HZ (20000000) // 20MHz para fluidez
 #define BITS_PER_PIXEL 16
 
 #define LCD_CS 42
@@ -53,12 +53,11 @@ static esp_lcd_panel_handle_t panel_handle = NULL;
 static lv_display_t *display = NULL;
 
 /* --------------------------------------------------------------------
- * Ejemplo LVGL: Barra de temperatura + Texto "VAMOS RIVER PLATE"
+ * Ejemplo LVGL: Barra de temperatura + Texto
  * -------------------------------------------------------------------- */
 static void set_temp(void *bar, int32_t temp) {
     lv_bar_set_value((lv_obj_t *)bar, temp, LV_ANIM_ON);
 }
-
 
 /* --------------------------------------------------------------------
  * Drivers de Pantalla e Integración LVGL
@@ -78,7 +77,7 @@ static void lvgl_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_t *px
     int offsety1 = area->y1;
     int offsety2 = area->y2;
 
-    lv_draw_sw_rgb565_swap(px_map, (offsetx2 + 1 - offsetx1) * (offsety2 + 1 - offsety1));
+    lv_draw_sw_rgb565_swap(px_map, (offsetx2 - offsetx1 + 1) * (offsety2 - offsety1 + 1));
     esp_lcd_panel_draw_bitmap(panel_h, offsetx1, offsety1, offsetx2 + 1, offsety2 + 1, px_map);
 }
 
@@ -93,8 +92,7 @@ void init_lcd_spi() {
         .miso_io_num = -1,
         .quadwp_io_num = -1,
         .quadhd_io_num = -1,
-        // CORRECCIÓN CLAVE: Permite enviar imágenes completas sin recortar el buffer DMA
-        .max_transfer_sz = LCD_H_RES * LCD_V_RES * sizeof(uint16_t),
+        .max_transfer_sz = LCD_H_RES * LVGL_DRAW_BUF_LINES * sizeof(uint16_t),
     };
     ESP_ERROR_CHECK(spi_bus_initialize(LCD_HOST, &bus_cfg, SPI_DMA_CH_AUTO));
 }
@@ -132,14 +130,16 @@ void init_display() {
     ESP_ERROR_CHECK(esp_lcd_panel_init(panel_handle));
     ESP_ERROR_CHECK(esp_lcd_panel_invert_color(panel_handle, true));
 
-    // CORRECCIÓN CLAVE: Offset para paneles ST7789 de 172px alojados en controlador de 240px
-    ESP_ERROR_CHECK(esp_lcd_panel_set_gap(panel_handle, 34, 0));
+    // Rotación de pantalla a modo horizontal (90°) por hardware
+    ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(panel_handle, true));
+    ESP_ERROR_CHECK(esp_lcd_panel_mirror(panel_handle, true, false));
+    ESP_ERROR_CHECK(esp_lcd_panel_set_gap(panel_handle, 0, 34));
 
     ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_handle, true));
 }
 
 void init_lvgl() {
-    _lock_init(&lvgl_api_lock); // Inicializar cerrojo de hilos
+    _lock_init(&lvgl_api_lock);
     lv_init();
 
     display = lv_display_create(LCD_H_RES, LCD_V_RES);
@@ -199,16 +199,15 @@ void display_init(void) {
     ESP_LOGI(TAG, "Inicializando LVGL");
     init_lvgl();
 
-    // Crear la interfaz antes de arrancar la tarea (o bajo protección de lock)
     _lock_acquire(&lvgl_api_lock);
-    lv_example();
+    ui_init();
     _lock_release(&lvgl_api_lock);
 
     ESP_LOGI(TAG, "Creando tarea FreeRTOS de LVGL");
     xTaskCreate(lvgl_port_task, "LVGL", LVGL_TASK_STACK_SIZE, NULL, LVGL_TASK_PRIORITY, NULL);
 }
 
-void display_show(char* line1, char* line2) {
+void display_show(char *line1, char *line2) {
     // Implementación futura
 }
 
