@@ -14,10 +14,10 @@ extern "C" {
 extern void ui_Screen1_screen_init(void);
 extern void ui_Screen1_screen_destroy(void);
 extern lv_obj_t * ui_Screen1;
-extern lv_obj_t * ui_Label1;
-extern lv_obj_t * ui_Label2;
 extern lv_obj_t * ui_lbltempval;
 extern lv_obj_t * ui_lblhumval;
+extern lv_obj_t * ui_lbltemp1;
+extern lv_obj_t * ui_lblhum1;
 extern lv_obj_t * ui_Label5;
 extern lv_obj_t * ui_Image1;
 // CUSTOM VARIABLES

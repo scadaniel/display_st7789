@@ -7,10 +7,10 @@
 
 lv_obj_t * uic_Image1;
 lv_obj_t * ui_Screen1 = NULL;
-lv_obj_t * ui_Label1 = NULL;
-lv_obj_t * ui_Label2 = NULL;
 lv_obj_t * ui_lbltempval = NULL;
 lv_obj_t * ui_lblhumval = NULL;
+lv_obj_t * ui_lbltemp1 = NULL;
+lv_obj_t * ui_lblhum1 = NULL;
 lv_obj_t * ui_Label5 = NULL;
 lv_obj_t * ui_Image1 = NULL;
 // event funtions
@@ -27,44 +27,44 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_style_bg_image_recolor_opa(ui_Screen1, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_color(ui_Screen1, lv_color_hex(0xFF1800), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(ui_Screen1, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(ui_Screen1, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui_Screen1, 8, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_Screen1, &lv_font_montserrat_22, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     lv_obj_set_style_bg_image_recolor(ui_Screen1, lv_color_hex(0x008BFF), LV_PART_SCROLLBAR | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_image_recolor_opa(ui_Screen1, 255, LV_PART_SCROLLBAR | LV_STATE_DEFAULT);
 
-    ui_Label1 = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_Label1, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label1, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Label1, 88);
-    lv_obj_set_y(ui_Label1, 27);
-    lv_obj_set_align(ui_Label1, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label1, "TEMP\n");
-
-    ui_Label2 = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_Label2, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label2, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Label2, 38);
-    lv_obj_set_y(ui_Label2, 61);
-    lv_obj_set_align(ui_Label2, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label2, "HUM\n");
-
     ui_lbltempval = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_lbltempval, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_lbltempval, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_lbltempval, -45);
-    lv_obj_set_y(ui_lbltempval, 15);
+    lv_obj_set_x(ui_lbltempval, 88);
+    lv_obj_set_y(ui_lbltempval, 27);
     lv_obj_set_align(ui_lbltempval, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_lbltempval, "TEMPERATURA=");
+    lv_label_set_text(ui_lbltempval, "TEMP\n");
 
     ui_lblhumval = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_lblhumval, LV_SIZE_CONTENT);   /// 3
+    lv_obj_set_width(ui_lblhumval, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_lblhumval, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_lblhumval, -70);
-    lv_obj_set_y(ui_lblhumval, 49);
+    lv_obj_set_x(ui_lblhumval, 38);
+    lv_obj_set_y(ui_lblhumval, 61);
     lv_obj_set_align(ui_lblhumval, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_lblhumval, "HUMEDAD=");
-    lv_label_set_recolor(ui_lblhumval, true);
+    lv_label_set_text(ui_lblhumval, "HUM\n");
+
+    ui_lbltemp1 = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_lbltemp1, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_lbltemp1, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_lbltemp1, -45);
+    lv_obj_set_y(ui_lbltemp1, 15);
+    lv_obj_set_align(ui_lbltemp1, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_lbltemp1, "TEMPERATURA=");
+
+    ui_lblhum1 = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_lblhum1, LV_SIZE_CONTENT);   /// 3
+    lv_obj_set_height(ui_lblhum1, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_lblhum1, -70);
+    lv_obj_set_y(ui_lblhum1, 49);
+    lv_obj_set_align(ui_lblhum1, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_lblhum1, "HUMEDAD=");
+    lv_label_set_recolor(ui_lblhum1, true);
 
     ui_Label5 = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_Label5, LV_SIZE_CONTENT);   /// 1
@@ -96,10 +96,10 @@ void ui_Screen1_screen_destroy(void)
 
     // NULL screen variables
     ui_Screen1 = NULL;
-    ui_Label1 = NULL;
-    ui_Label2 = NULL;
     ui_lbltempval = NULL;
     ui_lblhumval = NULL;
+    ui_lbltemp1 = NULL;
+    ui_lblhum1 = NULL;
     ui_Label5 = NULL;
     uic_Image1 = NULL;
     ui_Image1 = NULL;

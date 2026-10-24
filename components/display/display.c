@@ -16,18 +16,17 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "lvgl.h"
-#include "lvgl_example.h"
 #include "ui/ui.h"
+#include "display.h"
 
 static const char *TAG = "ST7789_LVGL_MAIN";
 
 #define LCD_HOST SPI2_HOST
 
-// Orientación horizontal de la pantalla (Rotada 90°)
 #define LCD_H_RES 320
 #define LCD_V_RES 172
 
-#define LCD_PIXEL_CLOCK_HZ (20000000) // 20MHz para fluidez
+#define LCD_PIXEL_CLOCK_HZ (20000000)
 #define BITS_PER_PIXEL 16
 
 #define LCD_CS 42
@@ -52,22 +51,30 @@ static esp_lcd_panel_io_handle_t io_handle = NULL;
 static esp_lcd_panel_handle_t panel_handle = NULL;
 static lv_display_t *display = NULL;
 
-/* --------------------------------------------------------------------
- * Ejemplo LVGL: Barra de temperatura + Texto
- * -------------------------------------------------------------------- */
-static void set_temp(void *bar, int32_t temp) {
-    lv_bar_set_value((lv_obj_t *)bar, temp, LV_ANIM_ON);
-}
-
-/* --------------------------------------------------------------------
- * Drivers de Pantalla e Integración LVGL
- * -------------------------------------------------------------------- */
 static bool notify_lvgl_flush_ready(esp_lcd_panel_io_handle_t panel_io,
                                     esp_lcd_panel_io_event_data_t *edata,
                                     void *user_ctx) {
     lv_display_t *disp = (lv_display_t *)user_ctx;
     lv_display_flush_ready(disp);
     return false;
+}
+
+void display_gui_update_data(uint8_t temp, uint8_t hum, bool valid)
+{
+    _lock_acquire(&lvgl_api_lock);
+    char str_buf[16];
+
+    if (valid) {
+        snprintf(str_buf, sizeof(str_buf), "%d °C", temp);
+        lv_label_set_text(ui_lbltempval, str_buf);
+
+        snprintf(str_buf, sizeof(str_buf), "%d %%", hum);
+        lv_label_set_text(ui_lblhumval, str_buf);
+    } else {
+        lv_label_set_text(ui_lbltempval, "-- °C");
+        lv_label_set_text(ui_lblhumval, "-- %");
+    }
+    _lock_release(&lvgl_api_lock);
 }
 
 static void lvgl_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map) {
@@ -130,7 +137,6 @@ void init_display() {
     ESP_ERROR_CHECK(esp_lcd_panel_init(panel_handle));
     ESP_ERROR_CHECK(esp_lcd_panel_invert_color(panel_handle, true));
 
-    // Rotación de pantalla a modo horizontal (90°) por hardware
     ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(panel_handle, true));
     ESP_ERROR_CHECK(esp_lcd_panel_mirror(panel_handle, true, false));
     ESP_ERROR_CHECK(esp_lcd_panel_set_gap(panel_handle, 0, 34));
@@ -145,7 +151,6 @@ void init_lvgl() {
     display = lv_display_create(LCD_H_RES, LCD_V_RES);
 
     size_t draw_buffer_sz = LCD_H_RES * LVGL_DRAW_BUF_LINES * sizeof(lv_color16_t);
-
     void *buf1 = spi_bus_dma_memory_alloc(LCD_HOST, draw_buffer_sz, 0);
     assert(buf1);
     void *buf2 = spi_bus_dma_memory_alloc(LCD_HOST, draw_buffer_sz, 0);
@@ -207,10 +212,10 @@ void display_init(void) {
     xTaskCreate(lvgl_port_task, "LVGL", LVGL_TASK_STACK_SIZE, NULL, LVGL_TASK_PRIORITY, NULL);
 }
 
-void display_show(char *line1, char *line2) {
-    // Implementación futura
+esp_err_t display_gui_init(void) {
+    display_init();
+    return ESP_OK;
 }
 
-void display_deinit(void) {
-    // Implementación futura
-}
+void display_show(const char *line1, const char *line2) {}
+void display_deinit(void) {}
