@@ -36,16 +36,16 @@ void ui_Screen1_screen_init(void)
     ui_lbltempval = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_lbltempval, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_lbltempval, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_lbltempval, 88);
-    lv_obj_set_y(ui_lbltempval, 27);
+    lv_obj_set_x(ui_lbltempval, 89);
+    lv_obj_set_y(ui_lbltempval, 14);
     lv_obj_set_align(ui_lbltempval, LV_ALIGN_CENTER);
     lv_label_set_text(ui_lbltempval, "TEMP\n");
 
     ui_lblhumval = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_lblhumval, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_lblhumval, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_lblhumval, 38);
-    lv_obj_set_y(ui_lblhumval, 61);
+    lv_obj_set_x(ui_lblhumval, 39);
+    lv_obj_set_y(ui_lblhumval, 48);
     lv_obj_set_align(ui_lblhumval, LV_ALIGN_CENTER);
     lv_label_set_text(ui_lblhumval, "HUM\n");
 
