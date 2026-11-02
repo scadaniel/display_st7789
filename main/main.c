@@ -41,6 +41,8 @@ static void sensor_task(void *pvParameters)
         ESP_LOGE(TAG, "Error al inicializar el sensor DHT11");
     }
 
+    // Como leemos cada 2 segundos, para llegar a 2 minutos (120 segundos) 
+    // necesitamos contar exactamente 60 ciclos (60 * 2s = 120s).
     int mqtt_publish_counter = 0; 
 
     while (1) {
@@ -50,24 +52,25 @@ static void sensor_task(void *pvParameters)
         esp_err_t res = dht11_read(&humidity, &temperature);
 
         if (res == ESP_OK) {
+            // 1. Refrescar la pantalla SIEMPRE cada 2 segundos con los nuevos valores
             ESP_LOGI(TAG, "[LECTURA OK] Temperatura: %d °C | Humedad: %d %%", temperature, humidity);
             display_gui_update_data(temperature, humidity, true);
 
+            // 2. Incrementar contador para el envío MQTT de cada 2 minutos
             mqtt_publish_counter++;
-            if (mqtt_publish_counter >= 5) {
+            if (mqtt_publish_counter >= 60) { // 60 ciclos * 2 segundos = 120 segundos (2 minutos)
                 mqtt_publish_counter = 0;
-                if (mqtt_initialized) {
-                    ESP_LOGI(TAG, "[MQTT] Enviando datos de temperatura y humedad...");
-                    mqtt_publish_sensor_data((float)temperature, (float)humidity);
-                } else {
-                    ESP_LOGW(TAG, "[MQTT] Omitiendo publicación: Cliente MQTT aún no conectado.");
-                }
+                
+                // Ejecutar envío MQTT (o respaldo en NVS si no hay red)
+                ESP_LOGI(TAG, "[MQTT] Ejecutando ciclo de envío (cada 2 minutos)...");
+                mqtt_publish_sensor_data((float)temperature, (float)humidity);
             }
         } else {
             ESP_LOGW(TAG, "[ERROR] Fallo en lectura del DHT11 (Código: %d)", res);
             display_gui_update_data(0, 0, false);
         }
 
+        // Intervalo fijo de 2 segundos para la lectura del sensor y la pantalla
         vTaskDelay(pdMS_TO_TICKS(2000));
     }
 }
@@ -93,10 +96,10 @@ void app_main(void)
     // 3. Inicializar el pulsador de reset en el GPIO 4
     ESP_ERROR_CHECK(reset_button_init(GPIO_NUM_4, 3));
 
-    // 4. Inicializar Wi-Fi PRIMERO (crea el netif y el bucle de eventos por debajo)
+    // 4. Inicializar Wi-Fi PRIMERO
     wifi_init_sta_or_ap();
 
-    // 5. Registrar el detector de IP DESPUÉS de que el sistema de red esté activo
+    // 5. Registrar el detector de IP
     ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT,
                                                         IP_EVENT_STA_GOT_IP,
                                                         &wifi_connect_event_handler,
