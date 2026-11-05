@@ -13,6 +13,7 @@ lv_obj_t * ui_lbltemp1 = NULL;
 lv_obj_t * ui_lblhum1 = NULL;
 lv_obj_t * ui_Label5 = NULL;
 lv_obj_t * ui_Image1 = NULL;
+lv_obj_t * ui_LabReloj = NULL;
 // event funtions
 
 // build funtions
@@ -21,13 +22,13 @@ void ui_Screen1_screen_init(void)
 {
     ui_Screen1 = lv_obj_create(NULL);
     lv_obj_remove_flag(ui_Screen1, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
-    lv_obj_set_style_bg_color(ui_Screen1, lv_color_hex(0xA300FF), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui_Screen1, lv_color_hex(0x00FCFF), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui_Screen1, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_image_recolor(ui_Screen1, lv_color_hex(0x4040FF), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_image_recolor_opa(ui_Screen1, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_color(ui_Screen1, lv_color_hex(0xFF1800), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_color(ui_Screen1, lv_color_hex(0x1100FF), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_opa(ui_Screen1, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(ui_Screen1, 8, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui_Screen1, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_Screen1, &lv_font_montserrat_22, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     lv_obj_set_style_bg_image_recolor(ui_Screen1, lv_color_hex(0x008BFF), LV_PART_SCROLLBAR | LV_STATE_DEFAULT);
@@ -36,32 +37,32 @@ void ui_Screen1_screen_init(void)
     ui_lbltempval = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_lbltempval, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_lbltempval, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_lbltempval, 89);
-    lv_obj_set_y(ui_lbltempval, 14);
+    lv_obj_set_x(ui_lbltempval, 79);
+    lv_obj_set_y(ui_lbltempval, 19);
     lv_obj_set_align(ui_lbltempval, LV_ALIGN_CENTER);
     lv_label_set_text(ui_lbltempval, "TEMP\n");
 
     ui_lblhumval = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_lblhumval, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_lblhumval, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_lblhumval, 39);
-    lv_obj_set_y(ui_lblhumval, 48);
+    lv_obj_set_x(ui_lblhumval, 38);
+    lv_obj_set_y(ui_lblhumval, 63);
     lv_obj_set_align(ui_lblhumval, LV_ALIGN_CENTER);
     lv_label_set_text(ui_lblhumval, "HUM\n");
 
     ui_lbltemp1 = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_lbltemp1, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_lbltemp1, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_lbltemp1, -45);
-    lv_obj_set_y(ui_lbltemp1, 15);
+    lv_obj_set_x(ui_lbltemp1, -52);
+    lv_obj_set_y(ui_lbltemp1, 18);
     lv_obj_set_align(ui_lbltemp1, LV_ALIGN_CENTER);
     lv_label_set_text(ui_lbltemp1, "TEMPERATURA=");
 
     ui_lblhum1 = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_lblhum1, LV_SIZE_CONTENT);   /// 3
     lv_obj_set_height(ui_lblhum1, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_lblhum1, -70);
-    lv_obj_set_y(ui_lblhum1, 49);
+    lv_obj_set_x(ui_lblhum1, -72);
+    lv_obj_set_y(ui_lblhum1, 58);
     lv_obj_set_align(ui_lblhum1, LV_ALIGN_CENTER);
     lv_label_set_text(ui_lblhum1, "HUMEDAD=");
     lv_label_set_recolor(ui_lblhum1, true);
@@ -69,8 +70,8 @@ void ui_Screen1_screen_init(void)
     ui_Label5 = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_Label5, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_Label5, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_Label5, 26);
-    lv_obj_set_y(ui_Label5, -52);
+    lv_obj_set_x(ui_Label5, 19);
+    lv_obj_set_y(ui_Label5, -58);
     lv_obj_set_align(ui_Label5, LV_ALIGN_CENTER);
     lv_label_set_text(ui_Label5, "COOL GUARD");
     lv_obj_set_style_text_font(ui_Label5, &lv_font_montserrat_30, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -85,6 +86,14 @@ void ui_Screen1_screen_init(void)
     lv_obj_add_flag(ui_Image1, LV_OBJ_FLAG_CLICKABLE);     /// Flags
     lv_obj_remove_flag(ui_Image1, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
     lv_image_set_scale(ui_Image1, 150);
+
+    ui_LabReloj = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_LabReloj, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabReloj, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_LabReloj, -34);
+    lv_obj_set_y(ui_LabReloj, -23);
+    lv_obj_set_align(ui_LabReloj, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_LabReloj, "Hora");
 
     uic_Image1 = ui_Image1;
 
@@ -103,5 +112,6 @@ void ui_Screen1_screen_destroy(void)
     ui_Label5 = NULL;
     uic_Image1 = NULL;
     ui_Image1 = NULL;
+    ui_LabReloj = NULL;
 
 }

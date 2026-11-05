@@ -41,4 +41,6 @@ esp_err_t display_gui_init(void);
  */
 void display_gui_update_data(uint8_t temp, uint8_t hum, bool valid);
 
+void display_gui_update_time(const char *time_str);
+
 #endif // DISPLAY_H

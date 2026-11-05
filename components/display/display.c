@@ -51,6 +51,10 @@ static esp_lcd_panel_io_handle_t io_handle = NULL;
 static esp_lcd_panel_handle_t panel_handle = NULL;
 static lv_display_t *display = NULL;
 
+
+
+
+
 static bool notify_lvgl_flush_ready(esp_lcd_panel_io_handle_t panel_io,
                                     esp_lcd_panel_io_event_data_t *edata,
                                     void *user_ctx) {
@@ -219,3 +223,18 @@ esp_err_t display_gui_init(void) {
 
 void display_show(const char *line1, const char *line2) {}
 void display_deinit(void) {}
+
+
+
+// Variable global generada por SquareLine Studio
+extern lv_obj_t *ui_LblReloj;
+
+
+void display_gui_update_time(const char *time_str)
+{
+    _lock_acquire(&lvgl_api_lock);
+    if (ui_LblReloj != NULL) {
+        lv_label_set_text(ui_LblReloj, time_str);
+    }
+    _lock_release(&lvgl_api_lock);
+}

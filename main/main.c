@@ -15,6 +15,8 @@
 #include "mqtt_client_gui.h"
 #include "reset_button.h"
 
+#include "reloj_manager.h"
+
 static const char *TAG = "MAIN";
 static bool mqtt_initialized = false;
 
@@ -41,8 +43,6 @@ static void sensor_task(void *pvParameters)
         ESP_LOGE(TAG, "Error al inicializar el sensor DHT11");
     }
 
-    // Como leemos cada 2 segundos, para llegar a 2 minutos (120 segundos) 
-    // necesitamos contar exactamente 60 ciclos (60 * 2s = 120s).
     int mqtt_publish_counter = 0; 
 
     while (1) {
@@ -52,16 +52,12 @@ static void sensor_task(void *pvParameters)
         esp_err_t res = dht11_read(&humidity, &temperature);
 
         if (res == ESP_OK) {
-            // 1. Refrescar la pantalla SIEMPRE cada 2 segundos con los nuevos valores
-            ESP_LOGI(TAG, "[LECTURA OK] Temperatura: %d °C | Humedad: %d %%", temperature, humidity);
+            ESP_LOGI(TAG, "[LECTURA OK] Temp: %d °C | Humedad: %d %%", temperature, humidity);
             display_gui_update_data(temperature, humidity, true);
 
-            // 2. Incrementar contador para el envío MQTT de cada 2 minutos
             mqtt_publish_counter++;
-            if (mqtt_publish_counter >= 60) { // 60 ciclos * 2 segundos = 120 segundos (2 minutos)
+            if (mqtt_publish_counter >= 60) { // Cada 2 minutos
                 mqtt_publish_counter = 0;
-                
-                // Ejecutar envío MQTT (o respaldo en NVS si no hay red)
                 ESP_LOGI(TAG, "[MQTT] Ejecutando ciclo de envío (cada 2 minutos)...");
                 mqtt_publish_sensor_data((float)temperature, (float)humidity);
             }
@@ -70,7 +66,6 @@ static void sensor_task(void *pvParameters)
             display_gui_update_data(0, 0, false);
         }
 
-        // Intervalo fijo de 2 segundos para la lectura del sensor y la pantalla
         vTaskDelay(pdMS_TO_TICKS(2000));
     }
 }
@@ -99,13 +94,16 @@ void app_main(void)
     // 4. Inicializar Wi-Fi PRIMERO
     wifi_init_sta_or_ap();
 
-    // 5. Registrar el detector de IP
+    // 5. Registrar el detector de IP para MQTT
     ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT,
                                                         IP_EVENT_STA_GOT_IP,
                                                         &wifi_connect_event_handler,
                                                         NULL,
                                                         NULL));
 
-    // 6. Crear la tarea FreeRTOS del sensor
+    // 6. INICIALIZAR EL COMPONENTE DEL RELOJ (Zona horaria, SNTP y tarea gráfica)
+    reloj_manager_init();
+
+    // 7. Crear la tarea FreeRTOS del sensor
     xTaskCreate(sensor_task, "sensor_task", 4096, NULL, 5, NULL);
 }
