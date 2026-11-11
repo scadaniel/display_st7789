@@ -43,4 +43,6 @@ void display_gui_update_data(uint8_t temp, uint8_t hum, bool valid);
 
 void display_gui_update_time(const char *time_str);
 
+void display_gui_update_datetime(const char *datetime_str);
+
 #endif // DISPLAY_H

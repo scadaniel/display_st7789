@@ -14,8 +14,7 @@
 #include "wifi_manager.h"
 #include "mqtt_client_gui.h"
 #include "reset_button.h"
-
-#include "reloj_manager.h"
+#include "reloj_manager.h" // Componente del reloj y sincronización NTP
 
 static const char *TAG = "MAIN";
 static bool mqtt_initialized = false;
@@ -56,9 +55,18 @@ static void sensor_task(void *pvParameters)
             display_gui_update_data(temperature, humidity, true);
 
             mqtt_publish_counter++;
-            if (mqtt_publish_counter >= 60) { // Cada 2 minutos
+            if (mqtt_publish_counter >= 60) { // Cada 2 minutos (asumiendo bucle de 2 segundos)
                 mqtt_publish_counter = 0;
-                ESP_LOGI(TAG, "[MQTT] Ejecutando ciclo de envío (cada 2 minutos)...");
+                
+                // Obtenemos la estampa de tiempo actual formateada (ej. "2026-11-11 12:50:00")
+                char timestamp_str[32];
+                reloj_manager_get_datetime_str(timestamp_str, sizeof(timestamp_str));
+                
+                ESP_LOGI(TAG, "[MQTT] Ejecutando ciclo de envío. Fecha/Hora: %s", timestamp_str);
+                
+                // Nota: Si tu función mqtt_publish_sensor_data() solo recibe temperatura y humedad, 
+                // puedes actualizarla en mqtt_client_gui.c para armar un JSON que incluya el timestamp_str,
+                // o bien pasar el timestamp como parámetro si modificas su firma.
                 mqtt_publish_sensor_data((float)temperature, (float)humidity);
             }
         } else {

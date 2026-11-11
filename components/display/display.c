@@ -21,6 +21,8 @@
 
 static const char *TAG = "ST7789_LVGL_MAIN";
 
+
+
 #define LCD_HOST SPI2_HOST
 
 #define LCD_H_RES 320
@@ -52,7 +54,8 @@ static esp_lcd_panel_handle_t panel_handle = NULL;
 static lv_display_t *display = NULL;
 
 
-
+// Variable global generada por SquareLine Studio en ui_Screen1.c
+extern lv_obj_t *ui_LabRelojval;
 
 
 static bool notify_lvgl_flush_ready(esp_lcd_panel_io_handle_t panel_io,
@@ -226,15 +229,27 @@ void display_deinit(void) {}
 
 
 
-// Variable global generada por SquareLine Studio
-extern lv_obj_t *ui_LblReloj;
+
+
 
 
 void display_gui_update_time(const char *time_str)
 {
     _lock_acquire(&lvgl_api_lock);
-    if (ui_LblReloj != NULL) {
-        lv_label_set_text(ui_LblReloj, time_str);
+    if (ui_LabRelojval != NULL) {
+        lv_label_set_text(ui_LabRelojval, time_str);
+    }
+    _lock_release(&lvgl_api_lock);
+}
+
+
+
+
+void display_gui_update_datetime(const char *datetime_str)
+{
+    _lock_acquire(&lvgl_api_lock);
+    if (ui_LabRelojval != NULL) {
+        lv_label_set_text(ui_LabRelojval, datetime_str);
     }
     _lock_release(&lvgl_api_lock);
 }

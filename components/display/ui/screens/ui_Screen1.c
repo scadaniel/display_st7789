@@ -13,7 +13,7 @@ lv_obj_t * ui_lbltemp1 = NULL;
 lv_obj_t * ui_lblhum1 = NULL;
 lv_obj_t * ui_Label5 = NULL;
 lv_obj_t * ui_Image1 = NULL;
-lv_obj_t * ui_LabReloj = NULL;
+lv_obj_t * ui_LabRelojval = NULL;
 // event funtions
 
 // build funtions
@@ -87,13 +87,13 @@ void ui_Screen1_screen_init(void)
     lv_obj_remove_flag(ui_Image1, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
     lv_image_set_scale(ui_Image1, 150);
 
-    ui_LabReloj = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_LabReloj, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_LabReloj, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_LabReloj, -34);
-    lv_obj_set_y(ui_LabReloj, -23);
-    lv_obj_set_align(ui_LabReloj, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_LabReloj, "Hora");
+    ui_LabRelojval = lv_label_create(ui_Screen1);
+    lv_obj_set_width(ui_LabRelojval, LV_SIZE_CONTENT);   /// 1
+    lv_obj_set_height(ui_LabRelojval, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_x(ui_LabRelojval, 13);
+    lv_obj_set_y(ui_LabRelojval, -23);
+    lv_obj_set_align(ui_LabRelojval, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_LabRelojval, "Hora");
 
     uic_Image1 = ui_Image1;
 
@@ -112,6 +112,6 @@ void ui_Screen1_screen_destroy(void)
     ui_Label5 = NULL;
     uic_Image1 = NULL;
     ui_Image1 = NULL;
-    ui_LabReloj = NULL;
+    ui_LabRelojval = NULL;
 
 }

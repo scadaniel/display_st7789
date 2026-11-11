@@ -20,7 +20,7 @@ extern lv_obj_t * ui_lbltemp1;
 extern lv_obj_t * ui_lblhum1;
 extern lv_obj_t * ui_Label5;
 extern lv_obj_t * ui_Image1;
-extern lv_obj_t * ui_LabReloj;
+extern lv_obj_t * ui_LabRelojval;
 // CUSTOM VARIABLES
 extern lv_obj_t * uic_Image1;
 
